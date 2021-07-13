@@ -503,6 +503,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 50
+--- !u!1 &1368404070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1368404071}
+  m_Layer: 0
+  m_Name: Stairs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1368404071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368404070}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1558628852
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,12 +572,16 @@ MonoBehaviour:
   targetCol: 1
   targetLevel: 0
   angle: 0
+  stairSize: 060000000e000000
   direction: 1
   mode: 0
   pin: {fileID: 1753045821946383930, guid: 73ede6e32c9491140a631db596af903a, type: 3}
   box: {fileID: 975652690}
   sphere: {fileID: 1229829534}
   rod: {fileID: 7984634481519678260, guid: c86e0d544373f854198e239b113dc360, type: 3}
+  stairsBox: {fileID: 1368404070}
+  stairPrefab: {fileID: 2656459208231866236, guid: b692c8be02267664783a7464f6c5c1e6, type: 3}
+  stairs: []
 --- !u!4 &1558628854
 Transform:
   m_ObjectHideFlags: 0

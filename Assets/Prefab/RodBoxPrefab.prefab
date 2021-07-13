@@ -106,7 +106,7 @@ GameObject:
   - component: {fileID: 7984634481519678261}
   - component: {fileID: -4272053513670583566}
   m_Layer: 4
-  m_Name: rodBoX
+  m_Name: RodBoxPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

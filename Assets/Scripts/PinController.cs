@@ -11,7 +11,8 @@ public class PinController : MonoBehaviour
     {
         OnePin,
         Sphere,
-        Rod
+        Rod,
+        Stairs
     };
     public Geometry geometry;
 
@@ -28,10 +29,14 @@ public class PinController : MonoBehaviour
     [Range(0, 45)]
     [SerializeField] private float angle;
 
-    public float[,] pinHeight;
+    private float[,] pinHeight;
     private float yPosition;
-    public GameObject[,] pinArray;    
+    private GameObject[,] pinArray;
 
+    public float height;
+    
+
+    public int[] stairSize;
     public enum Direction
     {
         Horizontal,
@@ -46,14 +51,22 @@ public class PinController : MonoBehaviour
     }
     public Mode mode;
 
+
+
     public GameObject pin;
     public GameObject box;
     public GameObject sphere;
     public GameObject rod;
+    public GameObject stairsBox;
+    public GameObject stairPrefab;
+    public GameObject[] stairs;
     private GameObject tiltedRod;
+
 
     private RaycastController raycastController;
     private float tempInterval;
+
+    //check if stairs have changed
     private void Awake()
     {
         //box.transform.localScale = new Vector3(xScale, yScale, zScale);
@@ -62,11 +75,35 @@ public class PinController : MonoBehaviour
         yPosition = transform.position.y;
         raycastController = GetComponent<RaycastController>();
         tiltedRod = Instantiate(rod, new Vector3(0.0f, 10.0f, 0.0f), Quaternion.identity);
+        stairs = new GameObject[stairSize.Length];
+    }
+    private void OnValidate()
+    {
+        int num = 20;
+        for(int i = 0; i < stairSize.Length; i++)
+        {
+            if (num <= 0)
+            {
+                stairSize[i] = 0;
+                continue;
+            }
+            if (stairSize[i] > num)
+            {
+                stairSize[i] = num;
+            }
+            num = num - stairSize[i];   
+        }
+
+        if (height > 15)
+        {
+            height = 15;
+        }
     }
 
-    // instantiate 20x20 pins
+    
     void Start()
     {
+        // instantiate 20x20 pins
         for (int i = 0; i < 20; i++)
         {
             for (int j = 0; j < 20; j++)
@@ -74,6 +111,23 @@ public class PinController : MonoBehaviour
                 pinArray[i, j] = Instantiate(pin, new Vector3(i * xScale, 0, j * zScale), Quaternion.identity, gameObject.transform);
             }
         }
+
+
+        // instantiate stairs;
+        
+        float offset = -1.5f;
+        for (int i = 0; i < stairSize.Length; i++)
+        {
+            if(stairSize.Length == 1)
+            {
+                break;
+            }
+            stairs[i] = Instantiate(stairPrefab, new Vector3(28.5f, i * height / (stairSize.Length-1), stairSize[i] * 1.5f + offset), Quaternion.identity, stairsBox.transform);
+            stairs[i].transform.localScale = new Vector3(stairs[i].transform.localScale.x, stairs[i].transform.localScale.y, stairSize[i] * 3.0f);
+            offset = stairSize[i]*3.0f+ offset;
+        }
+        
+        
     }
 
     // Update is called once per frame
@@ -86,6 +140,7 @@ public class PinController : MonoBehaviour
                 box.GetComponent<MeshRenderer>().enabled = true;
                 sphere.GetComponent<MeshRenderer>().enabled = true;
                 tiltedRod.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                //disable pins in VR mode except One Pin Geometry
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -107,11 +162,18 @@ public class PinController : MonoBehaviour
                         }
                     }
                 }
+                //enable stairs in VR mode
+                for(int i = 0; i < stairSize.Length; i++)
+                {
+                    stairs[i].GetComponent<MeshRenderer>().enabled = true;
+                }
+
                 break;
             case Mode.Physical:
                 box.GetComponent<MeshRenderer>().enabled = false;
                 sphere.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRod.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                //enable all pins
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -119,7 +181,14 @@ public class PinController : MonoBehaviour
                         pinArray[i, j].GetComponent<MeshRenderer>().enabled = true;
                     }
                 }
+                //disable stairs
+                
+                for (int i = 0; i < stairSize.Length; i++)
+                {
+                    stairs[i].GetComponent<MeshRenderer>().enabled = false;
+                }
                 break;
+
             default:
                 break;
         }
@@ -132,6 +201,7 @@ public class PinController : MonoBehaviour
                 tiltedRod.SetActive(false);
                 sphere.SetActive(false);
                 box.SetActive(true);
+                stairsBox.SetActive(false);
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -156,6 +226,7 @@ public class PinController : MonoBehaviour
                 tiltedRod.SetActive(false);
                 sphere.SetActive(true);
                 box.SetActive(true);
+                stairsBox.SetActive(false);
                 tempInterval = raycastController.max / 10.0f;
                 for (int i = 0; i < 20; i++)
                 {
@@ -176,6 +247,7 @@ public class PinController : MonoBehaviour
                 tiltedRod.SetActive(true);
                 sphere.SetActive(false);
                 box.SetActive(false);
+                stairsBox.SetActive(false);
                 float newLength = 60.0f / Mathf.Cos(Mathf.Deg2Rad * angle);
                 tiltedRod.transform.GetChild(0).localScale = new Vector3(newLength, 15, 2.9f);
                 float y = tiltedRod.transform.GetChild(0).localPosition.y;
@@ -195,6 +267,24 @@ public class PinController : MonoBehaviour
                     default:
                         break;
                 }
+                for (int i = 0; i < 20; i++)
+                {
+                    for (int j = 0; j < 20; j++)
+                    {
+                        pinHeight[i, j] = raycastController.hitDistances[i, j];
+                        if (pinHeight[i, j] >= 0)
+                        {
+                            SetPinHeight(pinArray[i, j], pinHeight[i, j]);
+                        }
+
+                    }
+                }
+                break;
+            case Geometry.Stairs:
+                tiltedRod.SetActive(false);
+                sphere.SetActive(false);
+                box.SetActive(false);
+                stairsBox.SetActive(true);
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
