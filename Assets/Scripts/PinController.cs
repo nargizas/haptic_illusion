@@ -33,10 +33,8 @@ public class PinController : MonoBehaviour
     private float yPosition;
     private GameObject[,] pinArray;
 
-    public float height;
-    
-
-    public int[] stairSize;
+    [Range(0, 7.5f)]
+    public float stairHeights;
     public enum Direction
     {
         Horizontal,
@@ -51,55 +49,27 @@ public class PinController : MonoBehaviour
     }
     public Mode mode;
 
-
-
     public GameObject pin;
     public GameObject box;
     public GameObject sphere;
     public GameObject rod;
     public GameObject stairsBox;
-    public GameObject stairPrefab;
-    public GameObject[] stairs;
+    //public GameObject stairPrefab;
+    //public GameObject[] stairs;
     private GameObject tiltedRod;
 
 
     private RaycastController raycastController;
     private float tempInterval;
 
-    //check if stairs have changed
     private void Awake()
     {
-        //box.transform.localScale = new Vector3(xScale, yScale, zScale);
         pinHeight = new float[20, 20];
         pinArray = new GameObject[20, 20];
         yPosition = transform.position.y;
         raycastController = GetComponent<RaycastController>();
         tiltedRod = Instantiate(rod, new Vector3(0.0f, 10.0f, 0.0f), Quaternion.identity);
-        stairs = new GameObject[stairSize.Length];
     }
-    private void OnValidate()
-    {
-        int num = 20;
-        for(int i = 0; i < stairSize.Length; i++)
-        {
-            if (num <= 0)
-            {
-                stairSize[i] = 0;
-                continue;
-            }
-            if (stairSize[i] > num)
-            {
-                stairSize[i] = num;
-            }
-            num = num - stairSize[i];   
-        }
-
-        if (height > 15)
-        {
-            height = 15;
-        }
-    }
-
     
     void Start()
     {
@@ -114,7 +84,7 @@ public class PinController : MonoBehaviour
 
 
         // instantiate stairs;
-        
+        /*
         float offset = -1.5f;
         for (int i = 0; i < stairSize.Length; i++)
         {
@@ -126,6 +96,7 @@ public class PinController : MonoBehaviour
             stairs[i].transform.localScale = new Vector3(stairs[i].transform.localScale.x, stairs[i].transform.localScale.y, stairSize[i] * 3.0f);
             offset = stairSize[i]*3.0f+ offset;
         }
+        */
         
         
     }
@@ -163,10 +134,8 @@ public class PinController : MonoBehaviour
                     }
                 }
                 //enable stairs in VR mode
-                for(int i = 0; i < stairSize.Length; i++)
-                {
-                    stairs[i].GetComponent<MeshRenderer>().enabled = true;
-                }
+                stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = true;
 
                 break;
             case Mode.Physical:
@@ -182,13 +151,9 @@ public class PinController : MonoBehaviour
                     }
                 }
                 //disable stairs
-                
-                for (int i = 0; i < stairSize.Length; i++)
-                {
-                    stairs[i].GetComponent<MeshRenderer>().enabled = false;
-                }
+                stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = false;
                 break;
-
             default:
                 break;
         }
@@ -285,6 +250,8 @@ public class PinController : MonoBehaviour
                 sphere.SetActive(false);
                 box.SetActive(false);
                 stairsBox.SetActive(true);
+                stairsBox.transform.GetChild(0).position = new Vector3(stairsBox.transform.GetChild(0).position.x, stairHeights, stairsBox.transform.GetChild(0).position.z);
+                stairsBox.transform.GetChild(1).position = new Vector3(stairsBox.transform.GetChild(1).position.x, 2 * stairHeights, stairsBox.transform.GetChild(1).position.z);
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
