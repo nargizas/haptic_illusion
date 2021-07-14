@@ -23,7 +23,7 @@ public class PinController : MonoBehaviour
     [Range(1, 20)]
     [SerializeField] private int targetCol;
     [Range(0, 10)]
-    [SerializeField] private int targetLevel;
+    [SerializeField] private int level;
 
     //Tilt rod by this angle
     [Range(0, 45)]
@@ -33,8 +33,6 @@ public class PinController : MonoBehaviour
     private float yPosition;
     private GameObject[,] pinArray;
 
-    [Range(0, 7.5f)]
-    public float stairHeights;
     public enum Direction
     {
         Horizontal,
@@ -81,24 +79,6 @@ public class PinController : MonoBehaviour
                 pinArray[i, j] = Instantiate(pin, new Vector3(i * xScale, 0, j * zScale), Quaternion.identity, gameObject.transform);
             }
         }
-
-
-        // instantiate stairs;
-        /*
-        float offset = -1.5f;
-        for (int i = 0; i < stairSize.Length; i++)
-        {
-            if(stairSize.Length == 1)
-            {
-                break;
-            }
-            stairs[i] = Instantiate(stairPrefab, new Vector3(28.5f, i * height / (stairSize.Length-1), stairSize[i] * 1.5f + offset), Quaternion.identity, stairsBox.transform);
-            stairs[i].transform.localScale = new Vector3(stairs[i].transform.localScale.x, stairs[i].transform.localScale.y, stairSize[i] * 3.0f);
-            offset = stairSize[i]*3.0f+ offset;
-        }
-        */
-        
-        
     }
 
     // Update is called once per frame
@@ -173,8 +153,8 @@ public class PinController : MonoBehaviour
                     {
                         if (i == targetRow - 1 && j == targetCol - 1)
                         {
-                            SetPinHeight(pinArray[i, j], interval * targetLevel);
-                            pinHeight[i, j] = interval * targetLevel;
+                            SetPinHeight(pinArray[i, j], interval * level);
+                            pinHeight[i, j] = interval * level;
                         }
                         else
                         {
@@ -183,7 +163,7 @@ public class PinController : MonoBehaviour
                         }
                     }
                 }
-                SetPinHeight(pinArray[targetRow-1, targetCol-1], interval * targetLevel);
+                SetPinHeight(pinArray[targetRow-1, targetCol-1], interval * level);
                 break;
             // simulate sphere
             case Geometry.Sphere:
@@ -250,8 +230,12 @@ public class PinController : MonoBehaviour
                 sphere.SetActive(false);
                 box.SetActive(false);
                 stairsBox.SetActive(true);
-                stairsBox.transform.GetChild(0).position = new Vector3(stairsBox.transform.GetChild(0).position.x, stairHeights, stairsBox.transform.GetChild(0).position.z);
-                stairsBox.transform.GetChild(1).position = new Vector3(stairsBox.transform.GetChild(1).position.x, 2 * stairHeights, stairsBox.transform.GetChild(1).position.z);
+                if(level >= 5)
+                {
+                    level = 5;
+                }
+                stairsBox.transform.GetChild(0).position = new Vector3(stairsBox.transform.GetChild(0).position.x, level * interval, stairsBox.transform.GetChild(0).position.z);
+                stairsBox.transform.GetChild(1).position = new Vector3(stairsBox.transform.GetChild(1).position.x, 2 * level * interval, stairsBox.transform.GetChild(1).position.z);
                 for (int i = 0; i < 20; i++)
                 {
                     for (int j = 0; j < 20; j++)
@@ -277,25 +261,6 @@ public class PinController : MonoBehaviour
                 break;
         }
             
-
-
-        // Sphere
-        /*
-        Debug.Log(raycastController.max);
-        tempInterval = raycastController.max / 10.0f;
-        for (int i = 0; i < 20; i++)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                pinHeight[i, j] = Map(raycastController.hitDistances[i, j], 0, raycastController.max, 0, 10);
-                if (pinHeight[i, j] >= 0)
-                {
-                    SetPinHeight(pinArray[i, j], pinHeight[i, j] * tempInterval);
-                }
-
-            }
-        }
-        */
     }
 
     // set each pin's height
@@ -311,7 +276,6 @@ public class PinController : MonoBehaviour
     {
         return (int)((value - fromLow) * (float)(toHigh - toLow) / (fromHigh - fromLow) + (float)(toLow));
     }
-
 
 }
 
