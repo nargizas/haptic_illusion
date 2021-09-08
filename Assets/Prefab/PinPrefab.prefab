@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1946848954993867915}
   - component: {fileID: 2312608135574228756}
   - component: {fileID: 498133784571692539}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PinPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -5,61 +5,68 @@ using UnityEngine;
 public class Randomize : MonoBehaviour
 {
     public int numberOfSamples;
-    public float maxAngle;
-    public float minAngle;
+    public float maximum;
+    public float minimum;
+    public int numberOfRepeats;
 
-    private float interval;
-    private int totalNumber;
+    [HideInInspector]
+    public int totalNumber;
     private float[] angleOptions;
-    private float[] samples;
-    // Start is called before the first frame update
-    void Start()
+    public static float[] samples;
+    public static float[] trainingSamples;
+    
+    private bool isRandomized = false;
+    private SurveySystem surveySystem;
+    private Retarget retarget;
+    private void Start()
     {
-        interval = (maxAngle - minAngle) / (numberOfSamples - 1) ;
-        angleOptions = new float[numberOfSamples];
-        totalNumber = numberOfSamples * 4; 
-        samples = new float[totalNumber];
-
-        for(int i = 0; i < numberOfSamples; i++)
+        trainingSamples = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
+        surveySystem = GetComponent<SurveySystem>();
+    }
+    void Update()
+    {
+        if (!isRandomized)
         {
-            angleOptions[i] = minAngle + interval * i;
+            samples = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
+            //randomize array with all possible samples
+            RandomizeArray(samples);
+
             
-            for (int j = 0; j < 4; j++)
+            if(!surveySystem.isTraining)
             {
-                samples[4 * i + j] = angleOptions[i];
-                
+                for (int i = 0; i < samples.Length; i++)
+                {
+                    Debug.Log((i+1) + " " + samples[i]);
+                }
+            } else
+            {
+                for (int i = 0; i < trainingSamples.Length; i++)
+                {
+                    Debug.Log((i+1) + " " + trainingSamples[i]);
+                }
             }
-        }
 
-        RandomizeArray(samples);
-
-        /*
-        for(int i = 0; i<samples.Length; i++)
-        {
-            Debug.Log(i + " " + samples[i]);
+            isRandomized = true;
         }
-        */
+        
     }
 
     private void OnValidate()
     {
-        minAngle = Mathf.Min(minAngle, maxAngle);
-        maxAngle = Mathf.Max(minAngle, maxAngle);
+        //set min angle to be less than max angle and vice versa
+        minimum = Mathf.Min(minimum, maximum);
+        maximum = Mathf.Max(minimum, maximum);
         
+        //at least 1 sample
         if(numberOfSamples < 1)
         {
             numberOfSamples = 1;
         } 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void RandomizeArray(float[] array)
     {
+        //shuffling array elements
         for (int t = 0; t < array.Length; t++)
         {
             float tmp = array[t];
@@ -68,5 +75,33 @@ public class Randomize : MonoBehaviour
             array[r] = tmp;
         }
     }
+    
 
+    public float[] CreateSamplesArray(int numberOfSamples, float maximum, float minimum, int numberOfRepeats)
+    {
+        
+        //difference between two consecutive angle options
+        float interval = (maximum - minimum) / (numberOfSamples - 1);
+
+        //array of unique angle samples (i.e. 5, 10, 15, 20, 25 etc.)
+        angleOptions = new float[numberOfSamples];
+
+        //each angle sample is repeated certain number of times
+        totalNumber = numberOfSamples * numberOfRepeats;
+
+        //array of all angles
+        float[] samples = new float[totalNumber];
+
+        for (int i = 0; i < numberOfSamples; i++)
+        {
+            angleOptions[i] = minimum + interval * i;
+
+            for (int j = 0; j < numberOfRepeats; j++)
+            {
+                samples[numberOfRepeats * i + j] = angleOptions[i];
+            }
+        }
+
+        return samples;
+    }
 }

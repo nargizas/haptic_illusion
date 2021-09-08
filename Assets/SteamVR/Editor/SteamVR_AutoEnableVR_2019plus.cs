@@ -273,9 +273,9 @@ namespace Valve.VR
                     EditorUtility.SetDirty(generalSettings);
                 }
 
-                bool existing = generalSettings.AssignedSettings.loaders.Any(loader => loader.name == valveOpenVRLoaderType);
+                bool existing = generalSettings.AssignedSettings.activeLoaders.Any(loader => loader.name == valveOpenVRLoaderType);
 
-                foreach (var loader in generalSettings.AssignedSettings.loaders)
+                foreach (var loader in generalSettings.AssignedSettings.activeLoaders)
                 {
                     Debug.Log("loader: " + loader.name);
                 }

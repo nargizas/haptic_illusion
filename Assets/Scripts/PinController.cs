@@ -52,8 +52,6 @@ public class PinController : MonoBehaviour
     public GameObject sphere;
     public GameObject rod;
     public GameObject stairsBox;
-    //public GameObject stairPrefab;
-    //public GameObject[] stairs;
     private GameObject tiltedRod;
 
 

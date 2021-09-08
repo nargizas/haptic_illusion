@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Sphere : MonoBehaviour
 {
-    [Range(1, 100)]
+    [Range(0, 0.5f)]
     public float radius;
 
+    private HW_PinController pinController;
 
-    void Update()
+    private void Update()
     {
-        transform.localScale = new Vector3(radius, radius, radius);
+        transform.localScale = new Vector3(radius, radius, radius) * pinController.scale;
     }
 }
