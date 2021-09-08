@@ -146,7 +146,7 @@ public class Retarget : MonoBehaviour
                 stick.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.up);
                 Vector3 tempLocalScale = new Vector3(calibratedLocalScale.x / 2 * scale, calibratedLocalScale.y, calibratedLocalScale.z);
                 stick.transform.localScale = tempLocalScale;
-                stick.transform.position = stickStartPosition + Vector3.left * (1 - 1 / scale) * calibratedLocalScale.x;
+                stick.transform.position = stickStartPosition + Vector3.left * (1 - scale/2) * calibratedLocalScale.x/2;
                 retargetedPosition.transform.position = ScaleUp(gameObject.transform.position, scale);
                 break;
 
@@ -177,9 +177,9 @@ public class Retarget : MonoBehaviour
 
                 afterScaling = true;
                 stick.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.up);
-                tempLocalScale = new Vector3(calibratedLocalScale.x / scale, calibratedLocalScale.y, calibratedLocalScale.z);
+                tempLocalScale = new Vector3(calibratedLocalScale.x /2 * scale, calibratedLocalScale.y, calibratedLocalScale.z);
                 stick.transform.localScale = tempLocalScale;
-                stick.transform.position = stickStartPosition + Vector3.left * (1 - 1 / scale) * calibratedLocalScale.x / 2;
+                stick.transform.position = stickStartPosition + Vector3.left * (1 - scale / 2) * calibratedLocalScale.x / 2;
 
                 //with illusion or not
                 if(SurveySystem.number % 2 == 0)
@@ -236,7 +236,7 @@ public class Retarget : MonoBehaviour
     private Vector3 ScaleUp(Vector3 vector, float scale)
     {
         //Vector3 newPosition = new Vector3 ((retargetedStartPoint.x - (startPoint.x - vector.x) / scale), vector.y, vector.z);
-        Vector3 newPosition = new Vector3 ((edgePoint.x - (edgePoint.x - vector.x) / scale), vector.y, vector.z);
+        Vector3 newPosition = new Vector3 ((edgePoint.x - (edgePoint.x - vector.x) / 2 * scale), vector.y, vector.z);
         return newPosition;
     }
 

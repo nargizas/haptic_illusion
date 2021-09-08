@@ -111,7 +111,7 @@ public class SurveySystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Show the trial number
         int trialNumber = number + 1;
         if (isTraining == true)
         {
@@ -138,6 +138,7 @@ public class SurveySystem : MonoBehaviour
             }
         }
 
+        //first sample of a trial with illusion, second sample - without
         if(number % 2 == 0)
         {
             withIllusion = true;
@@ -152,7 +153,7 @@ public class SurveySystem : MonoBehaviour
             illusionText.color = Color.red;
         }
 
-        //if input is enabled, then press space bar to call first question's box and disable the input
+        //if input is enabled, then press space bar or Trigger to call first question's box and disable the input
         if (inputEnabled)
         {
             if (!isTraining)

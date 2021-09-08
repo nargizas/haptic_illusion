@@ -11,15 +11,18 @@ public class HW_SurveySystem : MonoBehaviour
     private bool inputEnabled;
 
     public static int number = 0;
+    [SerializeField]
+    private int trialNumber;
     public bool sampleHasEnded = false;
     public static bool hasEnded = false;
 
+    private float oneTrialTime;
 
     // Start is called before the first frame update
     void Start()
     {
         totalTime = 0;
-        timeRemaining = 15.5f;
+        oneTrialTime = timeRemaining;
         timeIsRunning = true;
         inputEnabled = false;
     }
@@ -50,13 +53,13 @@ public class HW_SurveySystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        trialNumber = number;
         //if input is enabled, then press space bar to call first question's box and disable the input
         if (inputEnabled)
         {
             if (Input.GetKeyDown("space"))
             {
-                Increment(Randomize.samples);
+                Increment(HW_Randomize.samples);
                 inputEnabled = false;
             }
         }
@@ -64,13 +67,19 @@ public class HW_SurveySystem : MonoBehaviour
 
     public void Increment(float[] array)
     {
+        //increment number to move on to next trial
         if (number < array.Length)
         {
             number++;
             sampleHasEnded = true;
-            timeRemaining = 15;
+            timeRemaining = oneTrialTime;
             timeIsRunning = true;
         }
-    }
 
+        if (number == array.Length)
+        {
+            hasEnded = true;
+            Debug.Log("Thank you. This is the end of the experiment.");
+        }
+    }
 }

@@ -14,26 +14,47 @@ public class HW_Randomize : MonoBehaviour
     private float[] angleOptions;
     private float[] samplePairs;
     public static float[] samples;
+    public static bool[] illusions;
+    private bool[] illusionPair = new bool[2];
 
     private bool isRandomized = false;
+
+    private void Start()
+    {
+        illusionPair[0] = true;
+        illusionPair[1] = false;
+    }
     void Update()
     {
         if (!isRandomized)
         {
             samplePairs = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
+            Randomize(illusionPair);
             //randomize array with all possible samples
             Randomize(samplePairs);
+
+            
             samples = new float[samplePairs.Length * 2];
-            for (int i = 0; i < samplePairs.Length; i = i++)
+            illusions = new bool[samples.Length];
+            Debug.Log(samplePairs.Length);
+            Debug.Log(samples.Length);
+            
+            //double each trial
+            for (int i = 0; i < samples.Length; i++)
             {
-                samples[2*i] = samplePairs[i];
-                samples[2*i + 1] = samplePairs[i];
-                
+                samples[i] = samplePairs[(int)(i / 2)];
+                if(i % 2 == 0)
+                {
+                    Randomize(illusionPair);
+                    illusions[i] = illusionPair[0];
+                    illusions[i + 1] = illusionPair[1];
+                }
             }
+
 
             for (int i = 0; i < samples.Length; i++)
             {
-                Debug.Log((i + 1) + " " + samples[i]);
+                Debug.Log((i + 1) + " " + samples[i] + " " + illusions[i]);
             }
 
             isRandomized = true;
@@ -66,6 +87,19 @@ public class HW_Randomize : MonoBehaviour
         }
     }
 
+    private void Randomize(bool[] array)
+    {
+        //shuffling array elements
+        for (int t = 0; t < array.Length; t++)
+        {
+            bool tmp = array[t];
+            int r = Random.Range(t, array.Length);
+            array[t] = array[r];
+            array[r] = tmp;
+        }
+    }
+
+    /*
     private void RandomizeTwoArrays(float[] array, float[] illusions)
     {
         //shuffling array elements
@@ -77,6 +111,7 @@ public class HW_Randomize : MonoBehaviour
             array[r] = tmp;
         }
     }
+    */
 
     public float[] CreateSamplesArray(int numberOfSamples, float maximum, float minimum, int numberOfRepeats)
     {
@@ -91,7 +126,7 @@ public class HW_Randomize : MonoBehaviour
         totalNumber = numberOfSamples * numberOfRepeats;
 
         //array of all angles
-        float[] samples = new float[totalNumber];
+        float[] allSamples = new float[totalNumber];
         
         for (int i = 0; i < numberOfSamples; i++)
         {
@@ -99,11 +134,11 @@ public class HW_Randomize : MonoBehaviour
 
             for (int j = 0; j < numberOfRepeats; j++)
             {
-                samples[numberOfRepeats * i + j] = angleOptions[i];
+                allSamples[numberOfRepeats * i + j] = angleOptions[i];
             }
         }
 
-        return samples;
+        return allSamples;
     }
 
 }

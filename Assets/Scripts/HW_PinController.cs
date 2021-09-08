@@ -34,6 +34,7 @@ public class HW_PinController : MonoBehaviour
     private bool hasInstantiated = false;
 
     private float max = 0.0f;
+    [HideInInspector]
     public float[,] hitDistances = new float[20, 20];
     private float[,] pinHeight;
     private float yPosition;
@@ -57,7 +58,7 @@ public class HW_PinController : MonoBehaviour
     public GameObject rod;
     public GameObject stairsBox;
     private GameObject tiltedRod;
-    //private GameObject tiltedRodVR;
+    private GameObject tiltedRodVR;
 
     public enum Geometry
     {
@@ -123,6 +124,7 @@ public class HW_PinController : MonoBehaviour
         return (int)((value - fromLow) * (float)(toHigh - toLow) / (fromHigh - fromLow) + (float)(toLow));
     }
 
+    //initialize the position and scake of pins, rod
     private void Initialize()
     {
         if (!isInitialized)
@@ -139,9 +141,10 @@ public class HW_PinController : MonoBehaviour
             tiltedRod = Instantiate(rod, rodStartPosition, Quaternion.identity);
             tiltedRod.transform.localScale = calibratedLocalScale;
 
-            //tiltedRodVR = Instantiate(rod, rodStartPosition, Quaternion.identity);
-            //tiltedRodVR.transform.localScale = calibratedLocalScale;
-            //tiltedRodVR.gameObject.layer = 1 << 2;
+            tiltedRodVR = Instantiate(rod, rodStartPosition, Quaternion.identity);
+            tiltedRodVR.transform.localScale = calibratedLocalScale;
+            tiltedRodVR.gameObject.layer = 1 << 2;
+
             //rotation pivot point
             pivotPoint = transform.position + new Vector3(0, 0, 57.0f * a);
 
@@ -159,6 +162,7 @@ public class HW_PinController : MonoBehaviour
         }
     }
 
+    //Instantiate Pins
     private void InstantiatePins()
     {
         if (!hasInstantiated)
@@ -176,6 +180,7 @@ public class HW_PinController : MonoBehaviour
         hasInstantiated = true;
     }
 
+    //Hit raycast
     private void StartRaycast()
     {
         int layerMask = 1 << 4;
@@ -202,7 +207,6 @@ public class HW_PinController : MonoBehaviour
                 if (hitDistances[i, j] > max)
                 {
                     max = hitDistances[i, j];
-                    Debug.Log(max);
                 }
             }
         }
@@ -217,7 +221,8 @@ public class HW_PinController : MonoBehaviour
                 box.GetComponent<MeshRenderer>().enabled = true;
                 sphereVR.GetComponent<MeshRenderer>().enabled = true;
                 tiltedRod.GetComponent<MeshRenderer>().enabled = false;
-                //tiltedRodVR.GetComponent<MeshRenderer>().enabled = true;
+                tiltedRodVR.GetComponent<MeshRenderer>().enabled = true;
+
                 //disable pins in VR mode except One Pin Geometry
                 for (int i = 0; i < 20; i++)
                 {
@@ -236,7 +241,8 @@ public class HW_PinController : MonoBehaviour
                 box.GetComponent<MeshRenderer>().enabled = false;
                 sphereVR.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRod.GetComponent<MeshRenderer>().enabled = false;
-                //tiltedRodVR.GetComponent<MeshRenderer>().enabled = false;
+                tiltedRodVR.GetComponent<MeshRenderer>().enabled = false;
+
                 //enable all pins
                 for (int i = 0; i < 20; i++)
                 {
@@ -322,7 +328,7 @@ public class HW_PinController : MonoBehaviour
         box.SetActive(false);
         stairsBox.SetActive(false);
         tiltedRod.SetActive(true);
-        //tiltedRodVR.SetActive(true);
+        tiltedRodVR.SetActive(true);
         float newLength = calibratedLocalScale.x / Mathf.Cos(Mathf.Deg2Rad * angle);
         if (prevAngle != angle)
         {
@@ -334,7 +340,7 @@ public class HW_PinController : MonoBehaviour
             tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, angle);
         }
 
-        /*
+        
         if (prevAngle != angle)
         {
             tiltedRodVR.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
@@ -344,9 +350,9 @@ public class HW_PinController : MonoBehaviour
 
             tiltedRodVR.transform.RotateAround(pivotPoint, Vector3.up, angle);
         }
-        */
+        
         //if there is an illusion, then only virtual rod rotates
-        /*
+        
         if (HW_Randomize.illusions[HW_SurveySystem.number])
         {
             tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
@@ -361,7 +367,7 @@ public class HW_PinController : MonoBehaviour
 
             tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, angle);
         }
-        */
+        
         prevAngle = angle;
 
         for (int i = 0; i < 20; i++)
@@ -404,8 +410,6 @@ public class HW_PinController : MonoBehaviour
             }
         }
     }
-
-    
 
     //Angle redirection
     private Vector3 Rotate(Vector3 vector, float angle)
@@ -451,7 +455,7 @@ public class HW_PinController : MonoBehaviour
 
             //set sample angles automatically
             case InputMode.Automatic:
-                if (HW_SurveySystem.number < Randomize.samples.Length)
+                if (HW_SurveySystem.number < HW_Randomize.samples.Length)
                 {
                     angle = HW_Randomize.samples[HW_SurveySystem.number];
                     scale = HW_Randomize.samples[HW_SurveySystem.number];
