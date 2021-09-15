@@ -24,7 +24,8 @@ public class XMLManager : MonoBehaviour
 public class UserDataEntry
 {
     public int number;
-    public float time;
+    public float testTime;
+    public float answerTime;
     public float sample;
     public string isIllusion;
     public string hasPerceivedIllusion;
@@ -34,7 +35,8 @@ public class UserDataEntry
     public UserDataEntry()
     {
         this.number = 0;
-        this.time = 0.0f;
+        this.testTime = 0.0f;
+        this.answerTime = 0.0f;
         this.sample = 0.0f;
         this.isIllusion = "Y";
         this.hasPerceivedIllusion = "Y";

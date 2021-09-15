@@ -46,6 +46,8 @@ public class HW_PinController : MonoBehaviour
     [Range(0, 45)]
     public float angle;
     private float prevAngle;
+    private float physicalAngle;
+    private float prevPhysAngle;
     [Range(1, 2)]
     public float scale;
     [Range(0, 10)]
@@ -141,10 +143,12 @@ public class HW_PinController : MonoBehaviour
             tiltedRod = Instantiate(rod, rodStartPosition, Quaternion.identity);
             tiltedRod.transform.localScale = calibratedLocalScale;
 
+            //VR image of the rod
             tiltedRodVR = Instantiate(rod, rodStartPosition, Quaternion.identity);
             tiltedRodVR.transform.localScale = calibratedLocalScale;
-            tiltedRodVR.gameObject.layer = 1 << 2;
-
+            //change level of VR image
+            tiltedRodVR.gameObject.layer = 2;
+            tiltedRodVR.gameObject.transform.GetChild(0).gameObject.layer = 2;
             //rotation pivot point
             pivotPoint = transform.position + new Vector3(0, 0, 57.0f * a);
 
@@ -156,6 +160,7 @@ public class HW_PinController : MonoBehaviour
             box.transform.position = transform.position + new Vector3(28.5f * a, 0, 28.5f * a);
             sphere.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y/2, 28.5f * a);
             sphereVR.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y/2, 28.5f * a);
+            sphereVR.transform.localScale = sphereStartScale; 
             stairsBox.transform.position = transform.position + new Vector3(28.5f * a, 0, 28.5f * a);
             stairsBox.transform.localScale = stairsBox.transform.localScale * a;
             isInitialized = true;
@@ -219,6 +224,7 @@ public class HW_PinController : MonoBehaviour
         {
             case Mode.VR:
                 box.GetComponent<MeshRenderer>().enabled = true;
+                sphere.GetComponent<MeshRenderer>().enabled = false;
                 sphereVR.GetComponent<MeshRenderer>().enabled = true;
                 tiltedRod.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRodVR.GetComponent<MeshRenderer>().enabled = true;
@@ -237,8 +243,10 @@ public class HW_PinController : MonoBehaviour
                 stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
                 stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = true;
                 break;
+                
             case Mode.Physical:
                 box.GetComponent<MeshRenderer>().enabled = false;
+                sphereVR.GetComponent<MeshRenderer>().enabled = false;
                 sphereVR.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRod.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRodVR.GetComponent<MeshRenderer>().enabled = false;
@@ -299,13 +307,22 @@ public class HW_PinController : MonoBehaviour
     private void ImitateSphere()
     {
         tiltedRod.SetActive(false);
-        //tiltedRodVR.SetActive(false);
+        tiltedRodVR.SetActive(false);
         sphere.SetActive(true);
         sphereVR.SetActive(true);
         box.SetActive(true);
         stairsBox.SetActive(false);
 
         float tempInterval = (sphere.transform.position.y + sphere.transform.localScale.y/2) / 10.0f;
+        if (HW_Randomize.illusions[HW_SurveySystem.number])
+        {
+            sphere.transform.localScale = sphereStartScale * scale / 2;
+        }
+        else
+        {
+            sphere.transform.localScale = sphereStartScale;
+        }
+
         for (int i = 0; i < 20; i++)
         {
             for (int j = 0; j < 20; j++)
@@ -330,17 +347,28 @@ public class HW_PinController : MonoBehaviour
         tiltedRod.SetActive(true);
         tiltedRodVR.SetActive(true);
         float newLength = calibratedLocalScale.x / Mathf.Cos(Mathf.Deg2Rad * angle);
-        if (prevAngle != angle)
+
+
+        //if there is an illusion, physical rod is horizontal, VR image is rotated
+        if (HW_Randomize.illusions[HW_SurveySystem.number])
         {
-            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
+            physicalAngle = 0;
+        }
+        else
+        {
+            physicalAngle = angle;
+        }
+        
+        if (prevPhysAngle != physicalAngle)
+        {
+            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevPhysAngle);
 
             tiltedRod.transform.localScale = new Vector3(newLength, tiltedRod.transform.localScale.y, tiltedRod.transform.localScale.z);
             tiltedRod.transform.position = rodStartPosition - Vector3.left * (newLength - calibratedLocalScale.x) / 2;
 
-            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, angle);
+            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, physicalAngle);
         }
 
-        
         if (prevAngle != angle)
         {
             tiltedRodVR.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
@@ -350,24 +378,8 @@ public class HW_PinController : MonoBehaviour
 
             tiltedRodVR.transform.RotateAround(pivotPoint, Vector3.up, angle);
         }
-        
-        //if there is an illusion, then only virtual rod rotates
-        
-        if (HW_Randomize.illusions[HW_SurveySystem.number])
-        {
-            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
-            tiltedRod.transform.localScale = new Vector3(newLength, tiltedRod.transform.localScale.y, tiltedRod.transform.localScale.z);
-            tiltedRod.transform.position = rodStartPosition - Vector3.left * (newLength - calibratedLocalScale.x) / 2;
-        } else
-        {
-            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevAngle);
 
-            tiltedRod.transform.localScale = new Vector3(newLength, tiltedRod.transform.localScale.y, tiltedRod.transform.localScale.z);
-            tiltedRod.transform.position = rodStartPosition - Vector3.left * (newLength - calibratedLocalScale.x) / 2;
-
-            tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, angle);
-        }
-        
+        prevPhysAngle = physicalAngle;
         prevAngle = angle;
 
         for (int i = 0; i < 20; i++)

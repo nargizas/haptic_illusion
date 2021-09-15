@@ -4424,7 +4424,7 @@ MonoBehaviour:
   leftEdge: {fileID: 1936899736}
   rightEdge: {fileID: 382350141}
   retargetedPosition: {fileID: 7391208152285102114}
-  inputMode: 0
+  inputMode: 1
 --- !u!114 &1686131134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4454,7 +4454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2bccab6b32a8fb449fc3388ae878a57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  userID: 03-rotation
+  userID: 03-rotation-test
   withIllusion: 0
   totalTime: 0
   timeRemaining: 15
@@ -4466,7 +4466,6 @@ MonoBehaviour:
   waitingBoxText: {fileID: 1884102535}
   instructionBox: {fileID: 1063461900}
   instructionBoxText: {fileID: 1947258566}
-  sampleHasEnded: 0
   isTraining: 0
   slider: {fileID: 1559444676}
   inputSource: 0
