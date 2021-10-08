@@ -14,6 +14,10 @@ public class HW_SurveySystem : MonoBehaviour
     public static bool timeIsRunning;
     private bool inputEnabled;
 
+    private float timeWithIllusion;
+    private float timeWithoutIllusion;
+    private float answerTime;
+
     public static int number = 0;
     [SerializeField]
     private int trialNumber;
@@ -35,22 +39,26 @@ public class HW_SurveySystem : MonoBehaviour
     public GameObject firstBox;
     public GameObject secondBox;
     public GameObject thirdBox;
+    
+    [HideInInspector]
     public int firstAnswer;
+    [HideInInspector]
     public int secondAnswer;
+    [HideInInspector]
     public int thirdAnswer;
 
     public SteamVR_Input_Sources inputSource;
     public SteamVR_Action_Boolean clickAction;
 
     //database
-    private HW_XMLManager xmlManager;
-    private SecondUserDatabase userDatabase;
+    private HW_XML hw_xmlManager;
+    private HW_UserDatabase hw_userDatabase;
 
     // Start is called before the first frame update
     void Start()
     {
-        xmlManager = GetComponent<HW_XMLManager>();
-        userDatabase = new SecondUserDatabase();
+        hw_xmlManager = GetComponent<HW_XML>();
+        hw_userDatabase = new HW_UserDatabase();
 
         totalTime = 0;
         oneTrialTime = timeRemaining;
@@ -74,8 +82,6 @@ public class HW_SurveySystem : MonoBehaviour
                 firstBox.SetActive(false);
                 secondBox.SetActive(false);
                 thirdBox.SetActive(false);
-
-
 
                 if (timeRemaining > oneTrialTime - 5.0f)
                 {
@@ -127,25 +133,33 @@ public class HW_SurveySystem : MonoBehaviour
         //if input is enabled, then press space bar to call first question's box and disable the input
         if (inputEnabled)
         {
-            if(number % 2 == 1)
+            if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
             {
-                if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                Debug.Log(totalTime);
+                if (HW_Randomize.illusions[number] == true)
+                {
+                    timeWithIllusion = totalTime;
+                    totalTime = 0;
+                }
+                else
+                {
+                    timeWithoutIllusion = totalTime;
+                    totalTime = 0;
+                }
+                if (number % 2 == 1)
                 {
                     instructionBox.SetActive(false);
                     trialBox.SetActive(false);
                     waitingBox.SetActive(false);
                     firstBox.SetActive(true);
-                    inputEnabled = false;
                 }
-            } else
-            {
-                if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                else
                 {
                     Increment();
-                    inputEnabled = false;
                 }
+
+                inputEnabled = false;
             }
-            
 
         }
     }
@@ -154,15 +168,22 @@ public class HW_SurveySystem : MonoBehaviour
     {
         if (number < HW_Randomize.samples.Length)
         {
-            SecondUserDataEntry dataEntry = GetAnswers();
-            Debug.Log(dataEntry.number + " " + dataEntry.isIllusion + " " + dataEntry.firstAnswer + " " + dataEntry.secondAnswer + " " + dataEntry.thirdAnswer);
-            userDatabase.dataList.Add(dataEntry);
+            
+            if(number % 2 == 1)
+            {
+                HW_UserDataEntry dataEntry = GetAnswers();
+                Debug.Log(trialNumber + " " + dataEntry.firstAnswer + " " + dataEntry.secondAnswer + " " + dataEntry.thirdAnswer);
+                hw_userDatabase.hw_dataList.Add(dataEntry);
+                hw_xmlManager.SaveItems(hw_userDatabase, userID);
+                Debug.Log("saved");
+            }
             number++;
             sampleHasEnded = true;
             timeRemaining = oneTrialTime;
             timeIsRunning = true;
             totalTime = 0;
-            xmlManager.SaveItems(userDatabase, userID);
+            
+            
         }
 
         if (number == HW_Randomize.samples.Length)
@@ -172,7 +193,7 @@ public class HW_SurveySystem : MonoBehaviour
         }
 
     }
-    
+    /*
     public void Increment(float[] array)
     {
         //increment number to move on to next trial
@@ -195,6 +216,7 @@ public class HW_SurveySystem : MonoBehaviour
             Debug.Log("Thank you. This is the end of the experiment.");
         }
     }
+    */
 
     public void answerFirstQuestion(bool answer)
     {
@@ -230,13 +252,14 @@ public class HW_SurveySystem : MonoBehaviour
         }
     }
 
-    public SecondUserDataEntry GetAnswers()
+    public HW_UserDataEntry GetAnswers()
     {
-        SecondUserDataEntry dataEntry = new SecondUserDataEntry();
+        HW_UserDataEntry dataEntry = new HW_UserDataEntry();
         dataEntry.number = number + 1;
-        dataEntry.time = totalTime;
-        dataEntry.sample = (HW_Randomize.samples[number] >= 1 || HW_Randomize.samples[number] <= 2) ? (2 / HW_Randomize.samples[number]) : HW_Randomize.samples[number];
-        dataEntry.isIllusion = HW_Randomize.illusions[number];
+        dataEntry.sample = (HW_Randomize.samples[number] >= 1 && HW_Randomize.samples[number] <= 2) ? (2 / HW_Randomize.samples[number]) : HW_Randomize.samples[number];
+        dataEntry.timeWithIllusion = timeWithIllusion;
+        dataEntry.timeWithoutIllusion = timeWithoutIllusion;
+        dataEntry.answerTime = totalTime;
         dataEntry.firstAnswer = firstAnswer;
         dataEntry.secondAnswer = secondAnswer;
         dataEntry.thirdAnswer = thirdAnswer;

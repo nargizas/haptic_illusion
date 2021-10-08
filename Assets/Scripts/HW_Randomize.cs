@@ -72,6 +72,7 @@ public class HW_Randomize : MonoBehaviour
         if (numberOfSamples < 1)
         {
             numberOfSamples = 1;
+            minimum = 0;
         }
     }
 
@@ -115,18 +116,30 @@ public class HW_Randomize : MonoBehaviour
 
     public float[] CreateSamplesArray(int numberOfSamples, float maximum, float minimum, int numberOfRepeats)
     {
+        //each angle sample is repeated certain number of times
+        totalNumber = numberOfSamples * numberOfRepeats;
 
+        //array of all angles
+        float[] allSamples = new float[totalNumber];
+
+        /*
+        if (numberOfSamples == 1)
+        {
+            for (int j = 0; j < numberOfRepeats; j++)
+            {
+                allSamples[j] = maximum;
+            }
+            return allSamples;
+        }
+        */
+        
         //difference between two consecutive angle options
         float interval = (maximum - minimum) / (numberOfSamples - 1);
 
         //array of unique angle samples (i.e. 5, 10, 15, 20, 25 etc.)
         angleOptions = new float[numberOfSamples];
 
-        //each angle sample is repeated certain number of times
-        totalNumber = numberOfSamples * numberOfRepeats;
-
-        //array of all angles
-        float[] allSamples = new float[totalNumber];
+        ;
         
         for (int i = 0; i < numberOfSamples; i++)
         {

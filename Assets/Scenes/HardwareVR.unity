@@ -286,13 +286,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 1
-      - m_Target: {fileID: 875633373}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: 
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: Increment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -440,6 +440,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
         m_MethodName: ChangeColor
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerThirdQuestion
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -875,7 +887,7 @@ PrefabInstance:
       objectReference: {fileID: 2075896743}
     - target: {fileID: 2993077493517755930, guid: 973e3d3ca2ad1574d8a72a113afadac3, type: 3}
       propertyPath: defaultLength
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3838890236859682338, guid: 973e3d3ca2ad1574d8a72a113afadac3, type: 3}
       propertyPath: m_RootOrder
@@ -1650,6 +1662,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerThirdQuestion
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!114 &391192593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1966,7 +1990,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1810977473}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2633,7 +2657,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 873033195}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5cb8fcca8eb5946b829dc47742323d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0977986325e6ab64683f55b561447583, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &873033197
@@ -2663,6 +2687,7 @@ GameObject:
   - component: {fileID: 875633374}
   - component: {fileID: 875633376}
   - component: {fileID: 875633375}
+  - component: {fileID: 875633379}
   m_Layer: 5
   m_Name: Pins
   m_TagString: Untagged
@@ -2814,6 +2839,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &875633379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875633373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0977986325e6ab64683f55b561447583, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &887228609
 GameObject:
   m_ObjectHideFlags: 0
@@ -4556,7 +4593,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1810977473}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -4829,6 +4866,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
         m_MethodName: ChangeColor
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerSecondQuestion
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5596,6 +5645,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerSecondQuestion
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!114 &1982754947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5932,7 +5993,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1810977473}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -6086,6 +6147,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
+        m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerFirstQuestion
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 1
 --- !u!114 &2066064202
 MonoBehaviour:
@@ -6241,6 +6314,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Button, Assembly-CSharp
         m_MethodName: ChangeColor
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 1
+      - m_Target: {fileID: 875633376}
+        m_TargetAssemblyTypeName: HW_SurveySystem, Assembly-CSharp
+        m_MethodName: answerFirstQuestion
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

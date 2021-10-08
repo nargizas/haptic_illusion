@@ -15,7 +15,7 @@ public class Retarget : MonoBehaviour
     public RetargetingType type;
 
     //scaling factor for Scaling-up
-    [Range(0.5f, 2)] public float scale;
+    [Range(0.5f, 2.5f)] public float scale;
     //angle for retargeting
     [Range(0, 90)] public float angle;
     //last angle used for retargeting
@@ -131,7 +131,6 @@ public class Retarget : MonoBehaviour
                     SurveySystem.timeIsRunning = false;
                     surveySystem.illusionBox.SetActive(false);
                 }
-                
                 break;
                 
             default:
@@ -176,9 +175,13 @@ public class Retarget : MonoBehaviour
             case RetargetingType.TrainingScalingUp:
 
                 afterScaling = true;
+                /*
                 stick.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.up);
+                Debug.Log(calibratedLocalScale.x);
                 tempLocalScale = new Vector3(calibratedLocalScale.x /2 * scale, calibratedLocalScale.y, calibratedLocalScale.z);
                 stick.transform.localScale = tempLocalScale;
+                Debug.Log(stick.transform.localScale.x);
+                //stick.transform.position = stickStartPosition + Vector3.left * (1 - scale / 2) * calibratedLocalScale.x / 2;
                 stick.transform.position = stickStartPosition + Vector3.left * (1 - scale / 2) * calibratedLocalScale.x / 2;
 
                 //with illusion or not
@@ -189,7 +192,16 @@ public class Retarget : MonoBehaviour
                 {
                     retargetedPosition.transform.position = gameObject.transform.position;
                 }
-                
+                */
+
+                stick.transform.rotation = Quaternion.AngleAxis(0.0f, Vector3.up);
+                tempLocalScale = new Vector3(calibratedLocalScale.x / 2 * scale, calibratedLocalScale.y, calibratedLocalScale.z);
+                stick.transform.localScale = tempLocalScale;
+                stick.transform.position = stickStartPosition + Vector3.left * (1 - scale / 2) * calibratedLocalScale.x / 2;
+                retargetedPosition.transform.position = ScaleUp(gameObject.transform.position, scale);
+                break;
+
+
                 break;
 
             case RetargetingType.TrainingRotation:
@@ -292,17 +304,17 @@ public class Retarget : MonoBehaviour
             //When trackers are in the corners of the platform
             //scale to match physical stick
             float a = Vector3.Distance(leftEdge.transform.position, rightEdge.transform.position) / 76.0f;
-            calibratedLocalScale = new Vector3(a * 60.0f, a * 2.7f, a * 2.7f);
+            calibratedLocalScale = new Vector3(a * 60.0f, a * 2.8f, a * 2.8f);
             stick.transform.localScale = calibratedLocalScale;
 
             //locate a stick between two tracker
-            stickStartPosition = (leftEdge.transform.position + rightEdge.transform.position) / 2 - Vector3.Cross((rightEdge.transform.position - leftEdge.transform.position),Vector3.up).normalized * a * 69.85f ;
+            stickStartPosition = (leftEdge.transform.position + rightEdge.transform.position) / 2 - Vector3.Cross((rightEdge.transform.position - leftEdge.transform.position), Vector3.up).normalized * a * 69.85f;
             //stickStartPosition = (leftEdge.transform.position + rightEdge.transform.position) / 2 + new Vector3(0.04f, 0, a * 68.0f + calibratedLocalScale.z / 2);
             stick.transform.position = stickStartPosition;
             
 
             floor.transform.position = stickStartPosition - Vector3.up * a * 5.0f - stick.transform.localScale / 2;
-            surveySystem.waitingBox.transform.position = stickStartPosition + new Vector3(0, floor.transform.position.y + 0.1f, -25.0f* a);
+            surveySystem.waitingBox.transform.position = stickStartPosition + new Vector3(0, floor.transform.position.y + 0.1f, -90.0f* a);
             //set  the top left edge of the stick 
             Vector3 stickLeftOffset = (-1) * stick.transform.right * (stick.transform.localScale.x / 2f) * (1f);
             Vector3 stickTopOffset = stick.transform.up * (stick.transform.localScale.y / 2f) * (1f);

@@ -12,6 +12,8 @@ public class SurveySystem : MonoBehaviour
     [SerializeField]
     private bool withIllusion;
     public float totalTime;
+    private float testTime;
+    private float answerTime;
     public float timeRemaining;
     public static float oneTrialTime;
     public static bool timeIsRunning;
@@ -30,7 +32,7 @@ public class SurveySystem : MonoBehaviour
     AudioSource audioSource;
 
     public static int number = 0;
-    public bool sampleHasEnded = false;
+    private bool sampleStarted = false;
     public static bool hasEnded = false;
 
     private XMLManager xmlManager;
@@ -61,17 +63,23 @@ public class SurveySystem : MonoBehaviour
         timeIsRunning = true;
         inputEnabled = false;
         oneTrialTime = timeRemaining;
-        instructionBoxText.text = "Please, explore the virtual object";
+        
     }
 
     private void FixedUpdate()
     {
         //count total time
-        totalTime += Time.fixedDeltaTime;
+        if (sampleStarted)
+        {
+            totalTime += Time.fixedDeltaTime;
+        }
+        
+
         if (!hasEnded)
         {
             if (timeIsRunning)
             {
+
                 trialBox.SetActive(true);
                 instructionBox.SetActive(true);
                 //when timer is active, the dialogue boxes are inactive
@@ -79,16 +87,18 @@ public class SurveySystem : MonoBehaviour
                 secondBox.SetActive(false);
                 //if there is still time remainiing, continue subtracting
 
-
                 if (timeRemaining > oneTrialTime - 5.0f)
                 {
                     waitingBoxText.text = "WAIT";
                     waitingBoxText.color = Color.red;
+                    instructionBoxText.text = "Please, get into the starting position";
 
                 } else
-                { 
+                {
+                    instructionBoxText.text = "Please, explore the virtual object from right to left";
                     waitingBoxText.text = "START";
                     waitingBoxText.color = Color.black;
+                    sampleStarted = true;
                 }
 
                 if (timeRemaining > 0)
@@ -160,10 +170,13 @@ public class SurveySystem : MonoBehaviour
             {
                 if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
                 {
+                    testTime = totalTime;
+                    Debug.Log(testTime);
                     instructionBox.SetActive(false);
                     trialBox.SetActive(false);
                     waitingBox.SetActive(false);
                     firstBox.SetActive(true);
+                    totalTime = 0;
                     inputEnabled = false;
                 }
             } else
@@ -182,11 +195,12 @@ public class SurveySystem : MonoBehaviour
     {
         if (number < Randomize.samples.Length)
         {
+
             UserDataEntry dataEntry = GetAnswers();
             Debug.Log(dataEntry.number + " " + dataEntry.hasPerceivedIllusion + " " + dataEntry.rating);
             userDatabase.dataList.Add(dataEntry);
-            number++; 
-            sampleHasEnded = true;
+            number++;
+            sampleStarted = false;
             timeRemaining = oneTrialTime;
             totalTime = 0;
             timeIsRunning = true;
@@ -206,9 +220,9 @@ public class SurveySystem : MonoBehaviour
     public void Increment(float[] array)
     {
         if (number < array.Length)
-        { 
+        {
+            sampleStarted = true;
             number++;
-            sampleHasEnded = true;
             timeRemaining = oneTrialTime;
             timeIsRunning = true;
         }
@@ -226,12 +240,14 @@ public class SurveySystem : MonoBehaviour
     public UserDataEntry GetAnswers()
     {
         UserDataEntry dataEntry = new UserDataEntry();
-            dataEntry.number = number + 1;
-            dataEntry.time = totalTime;
-            dataEntry.sample = (Randomize.samples[number] >= 5 || Randomize.samples[number] >= 0) ? Randomize.samples[number] : (2 / Randomize.samples[number]);
-            dataEntry.isIllusion = "Y";
-            dataEntry.hasPerceivedIllusion = hadIllusion;
-            dataEntry.rating = (int)slider.value;
+
+        dataEntry.number = number + 1;
+        dataEntry.testTime = testTime;
+        dataEntry.answerTime = totalTime;
+        dataEntry.sample = (Randomize.samples[number] >= 1 && Randomize.samples[number] <= 2) ? (2 / Randomize.samples[number]) : Randomize.samples[number];
+        dataEntry.isIllusion = "Y";
+        dataEntry.hasPerceivedIllusion = hadIllusion;
+        dataEntry.rating = (int)slider.value;
 
         return dataEntry;
     }

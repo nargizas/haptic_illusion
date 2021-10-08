@@ -6,54 +6,54 @@ using System.Xml.Serialization;
 using UnityEngine;
 
 
-public class HW_XMLManager : MonoBehaviour
+public class HW_XML : MonoBehaviour
 {
 
-    public void SaveItems(SecondUserDatabase userDatabase, string userID)
+    public void SaveItems(HW_UserDatabase userDatabase, string userID)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(SecondUserDatabase));
+        XmlSerializer serializer = new XmlSerializer(typeof(HW_UserDatabase));
         FileStream fileStream = new FileStream("C:/Users/MAKinteract_Leopard/Documents/user_data_" + userID + ".xml", FileMode.OpenOrCreate);
         serializer.Serialize(fileStream, userDatabase);
         fileStream.Close();
     }
 
-
-
 }
 
 [System.Serializable]
-public class SecondUserDataEntry
+public class HW_UserDataEntry
 {
     public int number;
-    public float time;
     public float sample;
-    public bool isIllusion;
+    public float timeWithIllusion;
+    public float timeWithoutIllusion;
+    public float answerTime;
     public int firstAnswer;
     public int secondAnswer;
     public int thirdAnswer;
 
 
-    public SecondUserDataEntry()
+    public HW_UserDataEntry()
     {
         this.number = 0;
-        this.time = 0.0f;
         this.sample = 0.0f;
-        this.isIllusion = true;
+        this.timeWithIllusion = 0.0f;
+        this.timeWithoutIllusion = 0.0f;
+        this.answerTime = 0.0f;
         this.firstAnswer = 1;
         this.secondAnswer = 1;
         this.thirdAnswer = 1;
-}
+    }
 
 }
 
 [System.Serializable]
-public class SecondUserDatabase
+public class HW_UserDatabase
 {
-    public List<SecondUserDataEntry> dataList;
+    public List<HW_UserDataEntry> hw_dataList;
 
-    public SecondUserDatabase()
+    public HW_UserDatabase()
     {
-        dataList = new List<SecondUserDataEntry>();
+        hw_dataList = new List<HW_UserDataEntry>();
     }
 
 }
