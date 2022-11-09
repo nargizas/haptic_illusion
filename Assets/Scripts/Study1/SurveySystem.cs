@@ -11,14 +11,22 @@ public class SurveySystem : MonoBehaviour
     public string userID;
     [SerializeField]
     private bool withIllusion;
+    //time count
     public float totalTime;
+    //time spent on exploring the object
     private float testTime;
-    private float answerTime;
+    //minimum time for exploring
     public float timeRemaining;
     public static float oneTrialTime;
+    //check if time is running
     public static bool timeIsRunning;
+    //check if time is up and input is enabled
     private bool inputEnabled;
+    //check if it is waiting time
+    public static bool isWaiting = true;
 
+
+    //Instruction and Q&A boxes
     public GameObject firstBox;
     public GameObject secondBox;
     public GameObject trialBox;
@@ -31,10 +39,12 @@ public class SurveySystem : MonoBehaviour
     public TextMeshProUGUI instructionBoxText;
     AudioSource audioSource;
 
+    //get the number of samples
     public static int number = 0;
     private bool sampleStarted = false;
     public static bool hasEnded = false;
 
+    //to save the data
     private XMLManager xmlManager;
     private UserDatabase userDatabase;
 
@@ -45,13 +55,11 @@ public class SurveySystem : MonoBehaviour
 
 
     public Slider slider;
-    public SteamVR_Input_Sources inputSource;
-    public SteamVR_Action_Boolean clickAction;
+    //public SteamVR_Input_Sources inputSource;
+    //public SteamVR_Action_Boolean clickAction;
 
     public GameObject illusionBox;
     public TextMeshProUGUI illusionText;
-
-
 
     // Start is called before the first frame update
     void Start()
@@ -59,6 +67,7 @@ public class SurveySystem : MonoBehaviour
         xmlManager = GetComponent<XMLManager>();
         audioSource = GetComponent<AudioSource>();
         userDatabase = new UserDatabase();
+
         totalTime = 0;
         timeIsRunning = true;
         inputEnabled = false;
@@ -68,12 +77,11 @@ public class SurveySystem : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //count total time
+        /*//count total time from the Start
         if (sampleStarted)
         {
             totalTime += Time.fixedDeltaTime;
         }
-        
 
         if (!hasEnded)
         {
@@ -87,20 +95,24 @@ public class SurveySystem : MonoBehaviour
                 secondBox.SetActive(false);
                 //if there is still time remainiing, continue subtracting
 
+                //5s for waiting
                 if (timeRemaining > oneTrialTime - 5.0f)
                 {
                     waitingBoxText.text = "WAIT";
                     waitingBoxText.color = Color.red;
                     instructionBoxText.text = "Please, get into the starting position";
-
-                } else
+                    isWaiting = true;
+                }
+                else
                 {
                     instructionBoxText.text = "Please, explore the virtual object from right to left";
                     waitingBoxText.text = "START";
                     waitingBoxText.color = Color.black;
+                    isWaiting = false;
                     sampleStarted = true;
                 }
 
+                //decrement to count time left
                 if (timeRemaining > 0)
                 {
                     timeRemaining -= Time.fixedDeltaTime;
@@ -115,8 +127,58 @@ public class SurveySystem : MonoBehaviour
                 }
             }
 
-           
+        }*/
+
+        //count total time only when the user is exploring the bar
+        if (isWaiting == false)
+        {
+            totalTime += Time.fixedDeltaTime;
         }
+
+        if (!hasEnded)
+        {
+            if (timeIsRunning)
+            {
+                trialBox.SetActive(true);
+                instructionBox.SetActive(true);
+
+                //when timer is active, the dialogue boxes are inactive
+                firstBox.SetActive(false);
+                secondBox.SetActive(false);
+                //if there is still time remainiing, continue subtracting
+
+                //5s for waiting
+                if (timeRemaining > 5.0f)
+                {
+                    waitingBoxText.text = "WAIT";
+                    waitingBoxText.color = Color.red;
+                    instructionBoxText.text = "Please, get into the starting position";
+                    isWaiting = true;
+                }
+                else
+                {
+                    instructionBoxText.text = "Please, explore the virtual object from right to left";
+                    waitingBoxText.text = "GO";
+                    waitingBoxText.color = Color.black;
+                    isWaiting = false;
+                }
+
+                //decrement to count time left
+                if (timeRemaining > 0)
+                {
+                    timeRemaining -= Time.fixedDeltaTime;
+                }
+                //when time is up, play the beep sound, set remaining time to 0, enable input
+                else
+                {
+                    audioSource.Play();
+                    timeIsRunning = false;
+                    timeRemaining = 0;
+                    inputEnabled = true;
+                }
+            }
+        }
+
     }
     // Update is called once per frame
     void Update()
@@ -168,7 +230,8 @@ public class SurveySystem : MonoBehaviour
         {
             if (!isTraining)
             {
-                if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                //if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     testTime = totalTime;
                     Debug.Log(testTime);
@@ -177,11 +240,13 @@ public class SurveySystem : MonoBehaviour
                     waitingBox.SetActive(false);
                     firstBox.SetActive(true);
                     totalTime = 0;
+
                     inputEnabled = false;
                 }
             } else
             {
-                if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                //if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     Increment(Randomize.trainingSamples);
                     inputEnabled = false;
@@ -195,12 +260,12 @@ public class SurveySystem : MonoBehaviour
     {
         if (number < Randomize.samples.Length)
         {
-
             UserDataEntry dataEntry = GetAnswers();
             Debug.Log(dataEntry.number + " " + dataEntry.hasPerceivedIllusion + " " + dataEntry.rating);
             userDatabase.dataList.Add(dataEntry);
             number++;
-            sampleStarted = false;
+            //sampleStarted = false;
+            isWaiting = true;
             timeRemaining = oneTrialTime;
             totalTime = 0;
             timeIsRunning = true;
@@ -210,9 +275,11 @@ public class SurveySystem : MonoBehaviour
 
         if(number == Randomize.samples.Length)
         {
-            instructionBox.SetActive(false);
-            
-            trialBox.SetActive(false);
+            instructionBox.SetActive(true);
+            instructionBoxText.text = "This is the end of this part of the experiment.";
+            instructionBoxText.color = Color.blue;
+
+            hasEnded = true;
         }
 
     }
@@ -221,7 +288,8 @@ public class SurveySystem : MonoBehaviour
     {
         if (number < array.Length)
         {
-            sampleStarted = true;
+            isWaiting = true;
+            //sampleStarted = true;
             number++;
             timeRemaining = oneTrialTime;
             timeIsRunning = true;
@@ -262,5 +330,4 @@ public class SurveySystem : MonoBehaviour
             hadIllusion = "N";
         }
     }
-
 }

@@ -9,12 +9,26 @@ using TMPro;
 public class HW_SurveySystem : MonoBehaviour
 {
     public string userID;
+
+    //time count
     public float totalTime;
+
+
+    //minimum time for exploring
     public float timeRemaining;
+    public static float oneTrialTime;
+
+    //check if time is still running
     public static bool timeIsRunning;
+    //check if time is up an input is enabled
     private bool inputEnabled;
 
+    //check if it is waiting time
+    public static bool isWaiting = true;
+
+    //test time for illusion
     private float timeWithIllusion;
+    //test time for real
     private float timeWithoutIllusion;
     private float answerTime;
 
@@ -22,9 +36,9 @@ public class HW_SurveySystem : MonoBehaviour
     [SerializeField]
     private int trialNumber;
     public bool sampleHasEnded = false;
+    private bool sampleStarted = false;
     public static bool hasEnded = false;
 
-    private float oneTrialTime;
 
     public GameObject trialBox;
     public TextMeshProUGUI trialNumberText;
@@ -39,7 +53,7 @@ public class HW_SurveySystem : MonoBehaviour
     public GameObject firstBox;
     public GameObject secondBox;
     public GameObject thirdBox;
-    
+
     [HideInInspector]
     public int firstAnswer;
     [HideInInspector]
@@ -47,29 +61,32 @@ public class HW_SurveySystem : MonoBehaviour
     [HideInInspector]
     public int thirdAnswer;
 
-    public SteamVR_Input_Sources inputSource;
-    public SteamVR_Action_Boolean clickAction;
+    //public SteamVR_Input_Sources inputSource;
+    //public SteamVR_Action_Boolean clickAction;
 
     //database
     private HW_XML hw_xmlManager;
     private HW_UserDatabase hw_userDatabase;
 
+    //AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
         hw_xmlManager = GetComponent<HW_XML>();
         hw_userDatabase = new HW_UserDatabase();
+        //audioSource = GetComponent<AudioSource>();
 
         totalTime = 0;
         oneTrialTime = timeRemaining;
         timeIsRunning = true;
         inputEnabled = false;
 
-        instructionBoxText.text = "Please, explore the virtual object";
+
     }
 
     private void FixedUpdate()
     {
+        /*
         //count total time
         totalTime += Time.fixedDeltaTime;
         if (!hasEnded)
@@ -109,6 +126,63 @@ public class HW_SurveySystem : MonoBehaviour
                     inputEnabled = true;
                 }
             }
+        */
+        if (isWaiting == false)
+        {
+            totalTime += Time.fixedDeltaTime;
+            Debug.Log("1");
+        }
+
+        if (!hasEnded)
+        {
+            if (timeIsRunning)
+            {
+                Debug.Log("2");
+                trialBox.SetActive(true);
+                instructionBox.SetActive(true);
+
+                //when timer is active, the dialogue boxes are inactive
+                firstBox.SetActive(false);
+                secondBox.SetActive(false);
+                thirdBox.SetActive(false);
+
+
+                if (timeRemaining > 10.0f)
+                {
+                    Debug.Log("3");
+                    waitingBoxText.text = "WAIT";
+                    waitingBoxText.color = Color.red;
+                    instructionBoxText.text = "Please, get into the starting position";
+                    isWaiting = true;
+                }
+                else
+                {
+                    Debug.Log("4");
+                    instructionBoxText.text = "Please, explore the virtual object from right to left";
+                    waitingBoxText.text = "GO";
+                    waitingBoxText.color = Color.black;
+                    isWaiting = false;
+                }
+
+
+                //if there is still time remainiing, continue subtracting
+                if (timeRemaining > 0)
+                {
+                    Debug.Log("5");
+                    timeRemaining -= Time.fixedDeltaTime;
+                }
+
+                //when time is up, play the beep sound, set remaining time to 0, enable input
+                else
+                {
+                    Debug.Log("6");
+                    // audioSource.Play();
+                    timeIsRunning = false;
+                    timeRemaining = 0;
+                    inputEnabled = true;
+                }
+            }
+
         }
     }
     // Update is called once per frame
@@ -132,8 +206,9 @@ public class HW_SurveySystem : MonoBehaviour
 
         //if input is enabled, then press space bar to call first question's box and disable the input
         if (inputEnabled)
-        {
-            if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+        {   
+            //if (clickAction.GetStateDown(inputSource) || Input.GetKeyDown("space"))
+            if (Input.GetKeyDown("space"))
             {
                 Debug.Log(totalTime);
                 if (HW_Randomize.illusions[number] == true)

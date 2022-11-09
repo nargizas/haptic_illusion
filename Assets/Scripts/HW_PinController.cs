@@ -30,7 +30,7 @@ public class HW_PinController : MonoBehaviour
     private bool isInitialized = false;
 
     //private Vector3 stickStartPosition;
-    
+
     private bool hasInstantiated = false;
 
     private float max = 0.0f;
@@ -58,15 +58,15 @@ public class HW_PinController : MonoBehaviour
     public GameObject sphereVR;
     public GameObject box;
     public GameObject rod;
-    public GameObject stairsBox;
+    //public GameObject stairsBox;
     private GameObject tiltedRod;
     private GameObject tiltedRodVR;
 
     public enum Geometry
     {
         Sphere,
-        Rod,
-        Stairs
+        Rod
+        //Stairs
     };
     public Geometry geometry;
 
@@ -135,10 +135,10 @@ public class HW_PinController : MonoBehaviour
             a = Vector3.Distance(leftTopCorner.transform.position, rightTopCorner.transform.position) / distanceBetweenTrackers;
             calibratedLocalScale = new Vector3(a * 60.0f, a * 15.0f, a * 2.7f);
 
-            
+
             //locate a stick between two tracker
             //signs change depending on the orientation of axes
-            transform.position = leftTopCorner.transform.position +  new Vector3(a * distanceX, 0, a * distanceZ);
+            transform.position = leftTopCorner.transform.position + new Vector3(a * distanceX, 0, a * distanceZ);
             rodStartPosition = transform.position + new Vector3(28.5f * a, 0.05f, 57.0f * a);
             tiltedRod = Instantiate(rod, rodStartPosition, Quaternion.identity);
             tiltedRod.transform.localScale = calibratedLocalScale;
@@ -158,11 +158,11 @@ public class HW_PinController : MonoBehaviour
             //box
             box.transform.localScale = new Vector3(a * 60.0f, a * 15.0f, a * 60.0f);
             box.transform.position = transform.position + new Vector3(28.5f * a, 0, 28.5f * a);
-            sphere.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y/2, 28.5f * a);
-            sphereVR.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y/2, 28.5f * a);
-            sphereVR.transform.localScale = sphereStartScale; 
-            stairsBox.transform.position = transform.position + new Vector3(28.5f * a, 0, 28.5f * a);
-            stairsBox.transform.localScale = stairsBox.transform.localScale * a;
+            sphere.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y / 2, 28.5f * a);
+            sphereVR.transform.position = transform.position + new Vector3(28.5f * a, calibratedLocalScale.y / 2, 28.5f * a);
+            sphereVR.transform.localScale = sphereStartScale;
+            //stairsBox.transform.position = transform.position + new Vector3(28.5f * a, 0, 28.5f * a);
+            //stairsBox.transform.localScale = stairsBox.transform.localScale * a;
             isInitialized = true;
         }
     }
@@ -177,7 +177,7 @@ public class HW_PinController : MonoBehaviour
             {
                 for (int j = 0; j < 20; j++)
                 {
-                    pinArray[i, j] = Instantiate(pin, transform.position + new Vector3(i * xScale * a, 0, j * zScale*a), Quaternion.identity, gameObject.transform);
+                    pinArray[i, j] = Instantiate(pin, transform.position + new Vector3(i * xScale * a, 0, j * zScale * a), Quaternion.identity, gameObject.transform);
                     pinArray[i, j].transform.localScale = pinArray[i, j].transform.localScale * a;
                 }
             }
@@ -202,7 +202,7 @@ public class HW_PinController : MonoBehaviour
                     {
                         hitDistances[i, j] = 0;
                     }
-                    //Debug.DrawRay(raycastOrigin, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
+                    Debug.DrawRay(raycastOrigin, transform.TransformDirection(Vector3.down) * hit.distance, Color.yellow);
                 }
                 else
                 {
@@ -235,18 +235,18 @@ public class HW_PinController : MonoBehaviour
                     for (int j = 0; j < 20; j++)
                     {
                         pinArray[i, j].GetComponent<MeshRenderer>().enabled = false;
-                        
+
                     }
                 }
 
                 //enable stairs in VR mode
-                stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
-                stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = true;
+                //stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = true;
+                //stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = true;
                 break;
-                
+
             case Mode.Physical:
                 box.GetComponent<MeshRenderer>().enabled = false;
-                sphereVR.GetComponent<MeshRenderer>().enabled = false;
+                sphere.GetComponent<MeshRenderer>().enabled = false;
                 sphereVR.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRod.GetComponent<MeshRenderer>().enabled = false;
                 tiltedRodVR.GetComponent<MeshRenderer>().enabled = false;
@@ -260,14 +260,14 @@ public class HW_PinController : MonoBehaviour
                     }
                 }
                 //disable stairs
-                stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
-                stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = false;
+                //stairsBox.transform.GetChild(0).GetComponent<MeshRenderer>().enabled = false;
+                //stairsBox.transform.GetChild(1).GetComponent<MeshRenderer>().enabled = false;
                 break;
             default:
                 break;
         }
     }
-    
+
     //Sphere, Rod, Stairs
     private void ChooseGeometry()
     {
@@ -283,14 +283,14 @@ public class HW_PinController : MonoBehaviour
             //tilt rod
             case Geometry.Rod:
                 type = RetargetingType.Rotation;
-                ImitateRod();             
+                ImitateRod();
                 break;
-            
-            case Geometry.Stairs:
-                type = RetargetingType.ScalingUp;
-                ImitateStairs();
-                break;
-            
+
+            //case Geometry.Stairs:
+            //    type = RetargetingType.ScalingUp;
+            //    ImitateStairs();
+            //    break;
+
             default:
                 for (int i = 0; i < 20; i++)
                 {
@@ -300,7 +300,7 @@ public class HW_PinController : MonoBehaviour
                     }
                 }
                 break;
-            }
+        }
     }
 
     //Sphere
@@ -311,9 +311,9 @@ public class HW_PinController : MonoBehaviour
         sphere.SetActive(true);
         sphereVR.SetActive(true);
         box.SetActive(true);
-        stairsBox.SetActive(false);
+        //stairsBox.SetActive(false);
 
-        float tempInterval = (sphere.transform.position.y + sphere.transform.localScale.y/2) / 10.0f;
+        float tempInterval = (sphere.transform.position.y + sphere.transform.localScale.y / 2) / 10.0f;
         if (HW_Randomize.illusions[HW_SurveySystem.number])
         {
             sphere.transform.localScale = sphereStartScale * scale / 2;
@@ -327,11 +327,11 @@ public class HW_PinController : MonoBehaviour
         {
             for (int j = 0; j < 20; j++)
             {
-                pinHeight[i, j] = Map(hitDistances[i, j], 0, sphere.transform.position.y + sphere.transform.localScale.y/2, 0, 10);
-               
+                pinHeight[i, j] = Map(hitDistances[i, j], 0, sphere.transform.position.y + sphere.transform.localScale.y / 2, 0, 10);
+
                 if (pinHeight[i, j] >= 0)
                 {
-                    SetPinHeight(pinArray[i, j], pinHeight[i,j] * tempInterval);
+                    SetPinHeight(pinArray[i, j], pinHeight[i, j] * tempInterval);
                 }
             }
         }
@@ -343,22 +343,28 @@ public class HW_PinController : MonoBehaviour
         sphere.SetActive(false);
         sphereVR.SetActive(false);
         box.SetActive(false);
-        stairsBox.SetActive(false);
+        //stairsBox.SetActive(false);
         tiltedRod.SetActive(true);
         tiltedRodVR.SetActive(true);
         float newLength = calibratedLocalScale.x / Mathf.Cos(Mathf.Deg2Rad * angle);
 
-
-        //if there is an illusion, physical rod is horizontal, VR image is rotated
-        if (HW_Randomize.illusions[HW_SurveySystem.number])
+        if (inputMode == HW_PinController.InputMode.Automatic)
         {
-            physicalAngle = 0;
+            //if there is an illusion, physical rod is horizontal, VR image is rotated
+            if (HW_Randomize.illusions[HW_SurveySystem.number])
+            {
+                physicalAngle = 0;
+            }
+            else
+            {
+                physicalAngle = angle;
+            }
         }
         else
         {
             physicalAngle = angle;
         }
-        
+
         if (prevPhysAngle != physicalAngle)
         {
             tiltedRod.transform.RotateAround(pivotPoint, Vector3.up, -prevPhysAngle);
@@ -396,32 +402,32 @@ public class HW_PinController : MonoBehaviour
     }
 
     //Stairs
-    private void ImitateStairs()
-    {
-        //tiltedRodVR.SetActive(false);
-        tiltedRod.SetActive(false);
-        sphere.SetActive(false);
-        sphereVR.SetActive(false);
-        box.SetActive(false);
-        stairsBox.SetActive(true);
-        if (level >= 5)
-        {
-            level = 5;
-        }
-        stairsBox.transform.GetChild(0).position = new Vector3(stairsBox.transform.GetChild(0).position.x, yPosition + level * interval * a, stairsBox.transform.GetChild(0).position.z);
-        stairsBox.transform.GetChild(1).position = new Vector3(stairsBox.transform.GetChild(1).position.x, yPosition + 2 * level * interval*a, stairsBox.transform.GetChild(1).position.z);
-        for (int i = 0; i < 20; i++)
-        {
-            for (int j = 0; j < 20; j++)
-            {
-                pinHeight[i, j] = hitDistances[i, j];
-                if (pinHeight[i, j] >= 0)
-                {
-                    SetPinHeight(pinArray[i, j], pinHeight[i, j]);
-                }
-            }
-        }
-    }
+    //private void ImitateStairs()
+    //{
+    //    //tiltedRodVR.SetActive(false);
+    //    tiltedRod.SetActive(false);
+    //    sphere.SetActive(false);
+    //    sphereVR.SetActive(false);
+    //    box.SetActive(false);
+    //    stairsBox.SetActive(true);
+    //    if (level >= 5)
+    //    {
+    //        level = 5;
+    //    }
+    //    stairsBox.transform.GetChild(0).position = new Vector3(stairsBox.transform.GetChild(0).position.x, yPosition + level * interval * a, stairsBox.transform.GetChild(0).position.z);
+    //    stairsBox.transform.GetChild(1).position = new Vector3(stairsBox.transform.GetChild(1).position.x, yPosition + 2 * level * interval * a, stairsBox.transform.GetChild(1).position.z);
+    //    for (int i = 0; i < 20; i++)
+    //    {
+    //        for (int j = 0; j < 20; j++)
+    //        {
+    //            pinHeight[i, j] = hitDistances[i, j];
+    //            if (pinHeight[i, j] >= 0)
+    //            {
+    //                SetPinHeight(pinArray[i, j], pinHeight[i, j]);
+    //            }
+    //        }
+    //    }
+    //}
 
     //Angle redirection
     private Vector3 Rotate(Vector3 vector, float angle)
@@ -488,12 +494,12 @@ public class HW_PinController : MonoBehaviour
     {
         switch (type)
         {
-            
+
             case RetargetingType.ScalingUp:
                 retargetedPosition.transform.position = ScaleUp(tracker.gameObject.transform.position, scale);
                 break;
             case RetargetingType.Rotation:
-                
+
                 retargetedPosition.transform.position = Rotate(tracker.gameObject.transform.position, angle);
                 break;
             default:
@@ -511,5 +517,3 @@ public class HW_PinController : MonoBehaviour
         ChooseRedirectionType();
     }
 }
-
-

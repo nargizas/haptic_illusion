@@ -18,37 +18,65 @@ public class Randomize : MonoBehaviour
     private bool isRandomized = false;
     private SurveySystem surveySystem;
     private Retarget retarget;
+
+    private void Awake()
+    {
+        samples = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
+        //randomize array with all possible samples
+        RandomizeArray(samples);
+        for (int i = 0; i < samples.Length; i++)
+        {
+            Debug.Log((i + 1) + " " + samples[i]);
+        }
+/*
+        if (!surveySystem.isTraining)
+        {
+            for (int i = 0; i < samples.Length; i++)
+            {
+                Debug.Log((i + 1) + " " + samples[i]);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < trainingSamples.Length; i++)
+            {
+                Debug.Log((i + 1) + " " + trainingSamples[i]);
+            }
+        }*/
+    }
     private void Start()
     {
         trainingSamples = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
         surveySystem = GetComponent<SurveySystem>();
+
     }
     void Update()
     {
+/*
         if (!isRandomized)
         {
             samples = CreateSamplesArray(numberOfSamples, maximum, minimum, numberOfRepeats);
             //randomize array with all possible samples
             RandomizeArray(samples);
 
-            
-            if(!surveySystem.isTraining)
+
+            if (!surveySystem.isTraining)
             {
                 for (int i = 0; i < samples.Length; i++)
                 {
-                    Debug.Log((i+1) + " " + samples[i]);
+                    Debug.Log((i + 1) + " " + samples[i]);
                 }
-            } else
+            }
+            else
             {
                 for (int i = 0; i < trainingSamples.Length; i++)
                 {
-                    Debug.Log((i+1) + " " + trainingSamples[i]);
+                    Debug.Log((i + 1) + " " + trainingSamples[i]);
                 }
             }
 
             isRandomized = true;
-        }
-        
+        }*/
     }
 
     private void OnValidate()
@@ -58,10 +86,10 @@ public class Randomize : MonoBehaviour
         maximum = Mathf.Max(minimum, maximum);
         
         //at least 1 sample
-        if(numberOfSamples < 1)
+        if(numberOfSamples < 2)
         {
-            numberOfSamples = 1;
-            numberOfRepeats = 2;
+            numberOfSamples = 2;
+            numberOfRepeats = 1;
         } 
     }
 

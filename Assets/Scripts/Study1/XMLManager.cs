@@ -42,7 +42,6 @@ public class UserDataEntry
         this.hasPerceivedIllusion = "Y";
         this.rating = 0;
     }
-    
 }
 
 [System.Serializable]
