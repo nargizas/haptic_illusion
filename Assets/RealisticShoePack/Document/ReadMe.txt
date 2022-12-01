@@ -1,0 +1,4 @@
+Realistic Shoe Pack. In this pack you will get 3 types of shoe meshes and 17 type of materials on it. Hence you can have 17 types of shoe models.It has PBR texture maps and each textures are in 2k resolution. You can reduce the size as per your project pipe line. The shoe and the socks are in different sub objects so that you can switch off if you want to. Type 1 shoe model has 860 poly-counts,type 2 shoe has 960 poly counts and type 3 has 1252 poly counts. It is good for games and Vr experiences.You do not need any plugin or script to run this asset and you can use any version of the Unity as long as the Unity supports PBR materials.Use the prefabs so that you will not miss any shaders. I have used a free post processing from the Unity store for taking screen shots, You can use the same if you want to.You can easily attach to your rigged character in unity itself by making child of the foot bone.Better you rig in any 3d software 
+
+Thanks 
+SanuRenuArt
